@@ -4,6 +4,7 @@ import com.anli.jesse.exam.wheelactivity.domain.repository.WheelActivityReposito
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class PrizeInventorySyncTask {
       同步PrizeInventory回到實體上，每10秒執行一次
       以 Scheduled 設定為例，正式環境應採用分布式任務方案
     */
-    // @Scheduled(fixedRate = 10000) 
+    @Scheduled(fixedRate = 10000) 
     public void syncPrizeInventoryToWheelActivityJob() {
         for (Integer activityId : activityIds) {
              wheelActivityRepository.syncPrizeInventoryToWheelActivity(activityId);

@@ -91,11 +91,6 @@ public class WheelActivity implements Serializable {
 
         int rand = ThreadLocalRandom.current().nextInt(Prize.MAX_PROBABILITY + 1);
         for (Prize prize : prizes) {
-            log.info("抽獎隨機數: {},獎品名稱: {} , 獎品範圍: [{}, {}], 機率: {}, 數量: {}, 中獎: {}",
-    rand, prize.getName(),prize.getRangeStart(), prize.getRangeEnd(), prize.getProbability(), prize.getQuantity()
-            ,prize.getQuantity() > 0 && prize.getProbability() > 0 && rand >= prize.getRangeStart()
-                            && rand < prize.getRangeEnd());
-
             if (prize.getQuantity() > 0 && prize.getProbability() > 0 && rand >= prize.getRangeStart()
                     && rand < prize.getRangeEnd()) {
                 return DrawResult.winning(prize);
