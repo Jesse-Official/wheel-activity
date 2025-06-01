@@ -18,12 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class WheelActivity implements Serializable {
     public final static String NO_PRIZE_MESSAGE = "銘謝惠顧";
-    private final Integer id;
-    private final String name;
-    private final List<Prize> prizes;
+    private Integer id;
+    private String name;
+    private List<Prize> prizes;
     private Integer noPrizeProbability;
 
-    private WheelActivity(Integer id,String name) {
+    private WheelActivity(Integer id, String name) {
         this.id = id;
         this.name = name;
         this.prizes = new ArrayList<>();
@@ -31,16 +31,18 @@ public class WheelActivity implements Serializable {
     }
 
     @JsonCreator
-    public WheelActivity(@JsonProperty("id") Integer id,@JsonProperty("name")String name, @JsonProperty("prizes")List<Prize> prizes, @JsonProperty("noPrizeProbability")Integer noPrizeProbability) {
+    public WheelActivity(@JsonProperty("id") Integer id, @JsonProperty("name") String name,
+            @JsonProperty("prizes") List<Prize> prizes,
+            @JsonProperty("noPrizeProbability") Integer noPrizeProbability) {
         this.id = id;
         this.name = name;
         this.prizes = prizes != null ? prizes : new ArrayList<>();
         this.noPrizeProbability = noPrizeProbability != null ? noPrizeProbability : Prize.MAX_PROBABILITY;
     }
 
-    public static WheelActivity createWheelActivity(Integer id,String name) {
-        if (id == null || name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("活動ID和名稱不能為空");
+    public static WheelActivity createWheelActivity(Integer id, String name) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("名稱不能為空");
         }
         return new WheelActivity(id, name);
     }
@@ -56,7 +58,7 @@ public class WheelActivity implements Serializable {
 
     @JsonIgnore
     public void addAllPrize(List<Prize> prizes) {
-        if (prizes == null ) {
+        if (prizes == null) {
             throw new IllegalArgumentException("獎品列表不能為空值");
         }
         this.prizes.addAll(prizes);
@@ -99,7 +101,12 @@ public class WheelActivity implements Serializable {
         return DrawResult.notWinning(NO_PRIZE_MESSAGE);
     }
 
-    public List<Prize> getPrizes(){
-        return new ArrayList<>(prizes);
+    public List<Prize> getPrizes() {
+        return prizes;
     }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
 }

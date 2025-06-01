@@ -5,6 +5,8 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.*;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,20 +16,29 @@ import lombok.ToString;
 @Setter
 @EqualsAndHashCode(exclude = {"id"})
 @ToString
+@Entity
+@Table(name = "prize")
 public class Prize implements Serializable{
     /* 最大機率值，1表示0.000001 */
     public static final Integer MAX_PROBABILITY = 1000000;  
     /* 獎品ID */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     /* 獎品名稱 */
+    @Column(nullable = false)
     private String name;
     /* 獎品數量 */
-    private Integer quantity;
+    @Column(nullable = false)
+    private int quantity;
     /* 中獎機率: 1表示0.000001 */
-    private Integer probability;
+    @Column(nullable = false)
+    private int probability;
     /* 獎品範圍結束 */
+    @Column(name = "range_end", nullable = false)
     private Integer rangeEnd;
     /* 獎品範圍開始 */
+    @Column(name = "range_start", nullable = false)
     private Integer rangeStart;
 
     public Prize() {
@@ -37,7 +48,7 @@ public class Prize implements Serializable{
     @JsonCreator
     public Prize(@JsonProperty("id")Integer id, @JsonProperty("name")String name,  @JsonProperty("quantity")Integer quantity,  @JsonProperty("probability")Integer probability,  @JsonProperty("rangeStart")Integer rangeStart,  @JsonProperty("rangeEnd")Integer rangeEnd) {
         this.id = id;
-        this.name = name;
+         this.name = name;
         this.quantity = quantity;
         this.probability = probability;
         this.rangeStart = rangeStart;
@@ -46,7 +57,7 @@ public class Prize implements Serializable{
 
     public static Prize createPrize(Integer id, String name, Integer quantity, Integer probability) {
         Prize  prize= new Prize();
-        prize.initID(id);
+        prize.id = id;
         prize.initName(name);
         prize.resetQuantity(quantity);
         prize.resetProbability(probability);
@@ -67,12 +78,6 @@ public class Prize implements Serializable{
         this.name = name;
     }
 
-    private void initID(Integer id) {
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException("獎品ID不合法：" + id);
-        }
-        this.id = id;
-    }
 
     public void resetProbability(Integer probability) {
         if (probability == null || probability < 0 || probability > MAX_PROBABILITY) {

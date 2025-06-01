@@ -2,6 +2,7 @@ package com.anli.jesse.exam.wheelactivity.infrastructure.repository;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +15,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 @Repository
+@Profile("redis-store")
 public class RedisWheelActivityRepository implements WheelActivityRepository {
     private final StringRedisTemplate stringRedisTemplate;
     private final HashOperations<String, String, Integer> hashOps;

@@ -22,10 +22,11 @@
 
 ## 技術架構
 - 使用 Spring Boot Web 框架實現 RESTful API
-- 以 Redis 作為活動與獎品庫存的快取與同步機制
+- 以 Redis 作為活動與獎品庫存的快取與同步機制（可切換為 H2/JPA 方案，方便本地開發與測試）
 - 主要分層如下：
     - Domain Layer：包含 WheelActivity、Prize、DrawResult 等領域模型
-    - Repository Layer：WheelActivityRepository，負責活動與獎品資料的持久化（Redis）
+    - Repository Layer：WheelActivityRepository，負責活動與獎品資料的持久化（可選 Redis 或 JPA/H2）
     - Application Layer：WheelApplicationService，負責抽獎流程與業務邏輯
     - Service Layer：ActivityService，封裝抽獎演算法與業務規則
+    - Infrastructure Layer：提供 Redis、JPA 等實際資料存取實作
 

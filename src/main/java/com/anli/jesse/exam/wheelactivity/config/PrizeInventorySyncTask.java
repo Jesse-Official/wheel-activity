@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class PrizeInventorySyncTask {
       以 Scheduled 設定為例，正式環境應採用分布式任務方案
     */
     @Scheduled(fixedRate = 10000) 
+    @Transactional
     public void syncPrizeInventoryToWheelActivityJob() {
         for (Integer activityId : activityIds) {
              wheelActivityRepository.syncPrizeInventoryToWheelActivity(activityId);

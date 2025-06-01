@@ -1,6 +1,7 @@
 package com.anli.jesse.exam.wheelactivity.infrastructure.repository;
 
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.stereotype.Repository;
@@ -11,6 +12,7 @@ import com.anli.jesse.exam.wheelactivity.domain.repository.UserDrawChanceReposit
 import java.util.*;
 
 @Repository
+@Profile("redis-store")
 public class RedisUserDrawChanceRepository implements UserDrawChanceRepository {
     private final HashOperations<String, String, Object> hashOps;
     private final ListOperations<String, Object> listOps;
