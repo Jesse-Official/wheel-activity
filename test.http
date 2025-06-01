@@ -1,0 +1,9 @@
+###
+POST http://localhost:8080/api/wheel/play HTTP/1.2
+content-type: application/json
+
+{
+    "activityId": 1,
+    "userId": 1000,
+    "drawTimes": 10
+}
