@@ -30,3 +30,22 @@
     - Service Layer：ActivityService，封裝抽獎演算法與業務規則
     - Infrastructure Layer：提供 Redis、JPA 等實際資料存取實作
 
+## 測試方式
+- 啟動專案後，可用 Postman、curl 或 test.http 檔案進行 API 測試。
+- 範例：
+
+```sh
+curl -X POST \
+  http://localhost:8080/api/wheel/play \
+  -H "Content-Type: application/json" \
+  -d '{
+    "activityId": 1,
+    "userId": 1000,
+    "drawTimes": 10
+  }'
+```
+
+- 可透過 `/h2-console` 進入 H2 資料庫檢查資料。
+
+
+
