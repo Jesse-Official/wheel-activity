@@ -15,14 +15,16 @@
     - 檢查用戶剩餘抽獎次數
     - 從 Repository 取得活動資訊
     - 執行抽獎邏輯，根據機率與庫存決定結果
-    - 抽獎時即時從 Redis 扣減庫存，防止超抽，若庫存不足以視為未中獎
+    - 抽獎時即時從 Redis 原子扣減庫存，防止超抽，若庫存不足以視為未中獎
     - 返回抽獎結果
 - 庫存同步:
     - 定期(10秒)將 Redis 的庫存同步回 WheelActivity 實體，確保資料一致性
 
 ## 技術架構
 - 使用 Spring Boot Web 框架實現 RESTful API
-- 以 Redis 作為活動與獎品庫存的快取與同步機制（可切換為 H2/JPA 方案，方便本地開發與測試）
+- 以內嵌 Redis, H2為儲存體 方便本地開發與測試
+- Redis 作為活動與獎品庫存的快取與同步機制
+- 以 /JPA 方案
 - 主要分層如下：
     - Domain Layer：包含 WheelActivity、Prize、DrawResult 等領域模型
     - Repository Layer：WheelActivityRepository，負責活動與獎品資料的持久化（可選 Redis 或 JPA/H2）
@@ -46,6 +48,6 @@ curl -X POST \
 ```
 
 - 可透過 `/h2-console` 進入 H2 資料庫檢查資料。
-
+- 可以透過 PrizeInitializer 調整抽獎參數
 
 

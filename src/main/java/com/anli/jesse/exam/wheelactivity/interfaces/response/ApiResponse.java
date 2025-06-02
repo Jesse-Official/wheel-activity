@@ -5,14 +5,14 @@ import lombok.Data;
 
 @Data
 public class ApiResponse<T> {
-    private int code;
+    private String code;
     private String message;
     private T data;
 
     // 成功響應，只包含資料
     public static <T> ApiResponse<T> success(T data) {
         ApiResponse<T> response = new ApiResponse<>();
-        response.setCode(0000);
+        response.setCode("0000");
         response.setMessage("Success");
         response.setData(data);
         return response;
@@ -21,14 +21,14 @@ public class ApiResponse<T> {
     // 成功響應，包含資料和消息
     public static <T> ApiResponse<T> success(T data, String message) {
         ApiResponse<T> response = new ApiResponse<>();
-        response.setCode(0000);
+        response.setCode("0000");
         response.setMessage(message);
         response.setData(data);
         return response;
     }
 
     // 失敗響應，包含錯誤消息
-    public static <T> ApiResponse<T> error(int code, String message) {
+    public static <T> ApiResponse<T> error(String code, String message) {
         ApiResponse<T> response = new ApiResponse<>();
         response.setCode(code);
         response.setMessage(message);
@@ -36,7 +36,7 @@ public class ApiResponse<T> {
     }
 
     // 失敗響應，包含錯誤消息和資料 (有時也需要)
-    public static <T> ApiResponse<T> error(int code, String message, T data) {
+    public static <T> ApiResponse<T> error(String code, String message, T data) {
         ApiResponse<T> response = new ApiResponse<>();
         response.setCode(code);
         response.setMessage(message);
@@ -49,9 +49,17 @@ public class ApiResponse<T> {
     }
 
     // 帶有所有參數的建構子 (可選)
-    public ApiResponse(int code, String message, T data) {
+    public ApiResponse(String code, String message, T data) {
         this.code = code;
         this.message = message;
         this.data = data;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

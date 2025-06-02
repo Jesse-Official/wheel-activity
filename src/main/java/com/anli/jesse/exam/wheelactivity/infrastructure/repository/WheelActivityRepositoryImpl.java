@@ -5,6 +5,7 @@ import com.anli.jesse.exam.wheelactivity.domain.model.Prize;
 import com.anli.jesse.exam.wheelactivity.domain.model.WheelActivity;
 import com.anli.jesse.exam.wheelactivity.domain.repository.WheelActivityRepository;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -45,21 +46,23 @@ public class WheelActivityRepositoryImpl implements WheelActivityRepository {
         Activity entity = new Activity();
         entity.setId(wheelActivity.getId());
         entity.setName(wheelActivity.getName());
+        entity.setType(wheelActivity.getType());
         entity.setPrizes(wheelActivity.getPrizes());
         entity.setNoPrizeProbability(wheelActivity.getNoPrizeProbability());
         return entity;
     }
 
     @Override
+    @Cacheable(value = "wheelActivity", key = "#activityId")
     public Optional<WheelActivity> findById(Integer activityId) {
         return jpaRepo.findById(activityId)
-                .map(entity -> {
-                    return new WheelActivity(
-                            entity.getId(),
-                            entity.getName(),
-                            entity.getPrizes(),
-                            entity.getNoPrizeProbability());
-                });
+                .map(entity -> new WheelActivity(
+                        entity.getId(),
+                        entity.getName(),
+                        entity.getType(),
+                        entity.getPrizes(),
+                        entity.getNoPrizeProbability()
+                ));
     }
 
     private String buildPrizeInventoryKey(Integer activityId) {
@@ -105,5 +108,9 @@ public class WheelActivityRepositoryImpl implements WheelActivityRepository {
             }
         }
         save(activity);
+        if(redisInventory.entrySet().stream().map(Map.Entry::getValue).allMatch(q -> q == 0)) {
+            // 如果所有獎品庫存都為0，則刪除該活動的獎品庫存記錄
+            hashOps.delete(prizeInventoryKey);
+        }
     }
 }

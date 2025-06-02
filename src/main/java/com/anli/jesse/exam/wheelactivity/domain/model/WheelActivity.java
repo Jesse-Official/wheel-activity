@@ -20,22 +20,27 @@ public class WheelActivity implements Serializable {
     public final static String NO_PRIZE_MESSAGE = "銘謝惠顧";
     private Integer id;
     private String name;
+    private String type;
     private List<Prize> prizes;
     private Integer noPrizeProbability;
 
     private WheelActivity(Integer id, String name) {
         this.id = id;
         this.name = name;
+        this.type = "Wheel"; // 默認類型為 "Wheel"
         this.prizes = new ArrayList<>();
         this.noPrizeProbability = Prize.MAX_PROBABILITY; // 初始時無獎品機率為100%
     }
 
     @JsonCreator
-    public WheelActivity(@JsonProperty("id") Integer id, @JsonProperty("name") String name,
+    public WheelActivity(@JsonProperty("id") Integer id, 
+            @JsonProperty("name") String name,
+            @JsonProperty("type") String type,
             @JsonProperty("prizes") List<Prize> prizes,
             @JsonProperty("noPrizeProbability") Integer noPrizeProbability) {
         this.id = id;
         this.name = name;
+        this.type = type != null ? type : "Wheel"; 
         this.prizes = prizes != null ? prizes : new ArrayList<>();
         this.noPrizeProbability = noPrizeProbability != null ? noPrizeProbability : Prize.MAX_PROBABILITY;
     }

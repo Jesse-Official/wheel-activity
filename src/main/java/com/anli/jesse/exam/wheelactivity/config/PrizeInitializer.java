@@ -36,9 +36,9 @@ public class PrizeInitializer implements ApplicationRunner {
         log.info("初始化獎品資料...");
         List<Prize> prizeList = new ArrayList<>();
 
-        prizeList.add(Prize.createPrize(null,"Iphone", 1, 200000));
-        prizeList.add(Prize.createPrize(null,"AirPod", 2, 200000));
-        prizeList.add(Prize.createPrize(null,"AirTag", 3, 200000));
+        prizeList.add(Prize.createPrize(null,"Iphone", 1, 20000));
+        prizeList.add(Prize.createPrize(null,"AirPod", 2, 20000));
+        prizeList.add(Prize.createPrize(null,"AirTag", 3, 20000));
 
         var wheelActivity = WheelActivity.createWheelActivity(null, "電商轉盤抽獎活動");
         wheelActivity.addAllPrize(prizeList);
@@ -46,10 +46,10 @@ public class PrizeInitializer implements ApplicationRunner {
         wheelActivityRepository.save(wheelActivity);
 
         wheelActivityRepository.findById(wheelActivity.getId())
-                .ifPresent(value -> log.info("活動已存在於 Redis: " + value));
+                .ifPresent(value -> log.info("活動獎品已存在於 資料庫: " + value));
 
         Optional.ofNullable(redisTemplate.opsForHash().entries("wheel:" + wheelActivity.getId() + ":prizeInventory"))
-                .ifPresent(value -> log.info("活動已存在於 Redis: " + value));
+                .ifPresent(value -> log.info("獎品庫存已存在於 redis: " + value));
 
         Integer userId = 1000; // 假設用戶ID為1000
         userDrawChanceRepository.save(

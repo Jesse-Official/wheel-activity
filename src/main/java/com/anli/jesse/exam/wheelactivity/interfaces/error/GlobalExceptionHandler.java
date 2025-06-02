@@ -28,14 +28,14 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors().forEach(error -> {
             errors.put(error.getField(), error.getDefaultMessage());
         });
-        ApiResponse<Map<String, String>> response = ApiResponse.error(1006, "請求參數驗證失敗", errors);
+        ApiResponse<Map<String, String>> response = ApiResponse.error("1006", "請求參數驗證失敗", errors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ApiResponse<?>> handleNoSuchElementException(NoSuchElementException ex) {
         // 處理找不到資源的異常
-        ApiResponse<?> errorResponse = ApiResponse.error(1005, "找不到資源");
+        ApiResponse<?> errorResponse = ApiResponse.error("1005", "找不到資源");
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
         // 處理其他未被特定處理的異常
         // 在生產環境中，可能不希望將詳細的錯誤訊息直接返回給客戶端
         ex.printStackTrace();
-        ApiResponse<?> errorResponse = ApiResponse.error(9999, "系統發生錯誤，請稍後再試。");
+        ApiResponse<?> errorResponse = ApiResponse.error("9999", "系統發生錯誤，請稍後再試。");
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

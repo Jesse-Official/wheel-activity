@@ -15,6 +15,9 @@ public class Activity {
     @Column(nullable = false)
     private String name;
 
+    @Column(name = "type", nullable = true)
+    private String type;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "activity_id")
     private List<Prize> prizes;
@@ -60,6 +63,14 @@ public class Activity {
 
     public void setNoPrizeProbability(Integer noPrizeProbability) {
         this.noPrizeProbability = noPrizeProbability;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
         @Override
