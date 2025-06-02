@@ -27,6 +27,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import redis.embedded.RedisServer;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.time.Duration;
 import java.util.Objects;
 
@@ -47,7 +48,11 @@ public class RedisConfig {
     @Bean
     public RedisServer redisServer() throws IOException {
         RedisServer redisServer = new RedisServer(6379);
-        redisServer.start();
+        if (!redisServer.isActive()) {
+            redisServer.start();
+        } else {
+            // 不啟動 embedded-redis，或換 port
+        }
         this.redisServer = redisServer;
         log.info("redisServer server runnig!");
         return redisServer;

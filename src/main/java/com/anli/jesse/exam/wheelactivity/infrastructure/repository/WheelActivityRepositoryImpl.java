@@ -5,6 +5,8 @@ import com.anli.jesse.exam.wheelactivity.domain.model.Prize;
 import com.anli.jesse.exam.wheelactivity.domain.model.WheelActivity;
 import com.anli.jesse.exam.wheelactivity.domain.repository.WheelActivityRepository;
 
+import org.hibernate.Hibernate;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -26,6 +28,7 @@ public class WheelActivityRepositoryImpl implements WheelActivityRepository {
     }
 
     @Override
+    @CacheEvict(value = "wheelActivity", key = "#activity.id")
     public void save(WheelActivity activity) {
         Activity entity =jpaRepo.save(toEntity(activity));
         if(activity.getId() == null) {
@@ -56,13 +59,16 @@ public class WheelActivityRepositoryImpl implements WheelActivityRepository {
     @Cacheable(value = "wheelActivity", key = "#activityId")
     public Optional<WheelActivity> findById(Integer activityId) {
         return jpaRepo.findById(activityId)
-                .map(entity -> new WheelActivity(
-                        entity.getId(),
-                        entity.getName(),
-                        entity.getType(),
-                        entity.getPrizes(),
-                        entity.getNoPrizeProbability()
-                ));
+                .map(entity -> {
+                    Hibernate.initialize(entity.getPrizes());
+                    return new WheelActivity(
+                            entity.getId(),
+                            entity.getName(),
+                            entity.getType(),
+                            entity.getPrizes(),
+                            entity.getNoPrizeProbability()
+                    );
+                });
     }
 
     private String buildPrizeInventoryKey(Integer activityId) {
