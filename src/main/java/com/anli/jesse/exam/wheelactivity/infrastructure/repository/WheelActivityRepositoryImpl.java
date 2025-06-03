@@ -5,13 +5,14 @@ import com.anli.jesse.exam.wheelactivity.domain.model.Prize;
 import com.anli.jesse.exam.wheelactivity.domain.model.WheelActivity;
 import com.anli.jesse.exam.wheelactivity.domain.repository.WheelActivityRepository;
 
-import org.hibernate.Hibernate;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,10 +21,12 @@ import java.util.stream.Collectors;
 public class WheelActivityRepositoryImpl implements WheelActivityRepository {
     private final JpaWheelActivityRepository jpaRepo;
     private final HashOperations<String, String, Integer> hashOps;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public WheelActivityRepositoryImpl(JpaWheelActivityRepository jpaRepo,
             RedisTemplate<String, Object> redisTemplate) {
         this.jpaRepo = jpaRepo;
+        this.redisTemplate = redisTemplate;
         this.hashOps = redisTemplate.opsForHash();
     }
 
@@ -60,12 +63,12 @@ public class WheelActivityRepositoryImpl implements WheelActivityRepository {
     public Optional<WheelActivity> findById(Integer activityId) {
         return jpaRepo.findById(activityId)
                 .map(entity -> {
-                    Hibernate.initialize(entity.getPrizes());
+                    List<Prize> prizes =  new ArrayList<>(entity.getPrizes());
                     return new WheelActivity(
                             entity.getId(),
                             entity.getName(),
                             entity.getType(),
-                            entity.getPrizes(),
+                            prizes,
                             entity.getNoPrizeProbability()
                     );
                 });
@@ -114,9 +117,9 @@ public class WheelActivityRepositoryImpl implements WheelActivityRepository {
             }
         }
         save(activity);
-        if(redisInventory.entrySet().stream().map(Map.Entry::getValue).allMatch(q -> q == 0)) {
+        if(!redisInventory.isEmpty() &&redisInventory.entrySet().stream().map(Map.Entry::getValue).allMatch(q -> q == 0)) {
             // 如果所有獎品庫存都為0，則刪除該活動的獎品庫存記錄
-            hashOps.delete(prizeInventoryKey);
+            redisTemplate.delete(prizeInventoryKey);
         }
     }
 }

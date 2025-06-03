@@ -18,7 +18,7 @@ public class Activity {
     @Column(name = "type", nullable = true)
     private String type;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "activity_id")
     private List<Prize> prizes;
 
